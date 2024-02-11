@@ -35,15 +35,28 @@
             - "'three' in groups['odd']"
 
       - name: change symlink
-        file: src=./inventory_new.yml dest=./inventory_refresh.yml state=link force=yes follow=false
+        file:
+          src: ./inventory_new.yml
+          dest: ./inventory_refresh.yml
+          state: link
+          force: yes
+          follow: false
         delegate_to: localhost
+
+      - name: purge the inventory to new source
+        meta: purge_inventory
 
       - name: refresh the inventory to new source
         meta: refresh_inventory
 
       always:
         - name: revert symlink, inventory was already reread or failed
-          file: src=./inventory_old.yml dest=./inventory_refresh.yml state=link force=yes follow=false
+          file:
+            src: ./inventory_old.yml
+            dest: ./inventory_refresh.yml
+            state: link
+            force: yes
+            follow: false
           delegate_to: localhost
 
 - hosts: all
@@ -61,9 +74,7 @@
       - name: check added host state
         assert:
           that:
-            - "'yolo' in ansible_play_hosts"
-            - "'even' in groups"
-            - "'odd' in groups"
-            - "'two' in groups['even']"
-            - "'three' in groups['odd']"
+            - "'yolo' not in ansible_play_hosts"
+            - "'even' not in groups"
+            - "'odd' not in groups"
         run_once: true

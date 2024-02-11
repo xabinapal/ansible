@@ -76,3 +76,4 @@ done
 # test refresh
 ansible-playbook -i inventory_refresh.yml refresh.yml "$@"
 ansible-playbook -i inventory_refresh.yml refresh_preserve_dynamic.yml "$@"
+ansible-playbook -i inventory_refresh.yml refresh_purge_dynamic.yml "$@"

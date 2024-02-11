@@ -20,7 +20,7 @@
         meta: refresh_inventory
 
       always:
-        - name: revert symlink, invenotry was already reread or failed
+        - name: revert symlink, inventory was already reread or failed
           file: src=./inventory_old.yml dest=./inventory_refresh.yml state=link force=yes follow=false
           delegate_to: localhost
           run_once: true
