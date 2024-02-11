@@ -339,17 +339,22 @@ class InventoryManager(object):
         self._hosts_patterns_cache = {}
         self._pattern_cache = {}
 
-    def refresh_inventory(self):
+    def refresh_inventory(self, purge=False):
         ''' recalculate inventory '''
 
         self.clear_caches()
         self._inventory = InventoryData()
         self.parse_sources(cache=False)
-        for host in self._cached_dynamic_hosts:
-            self.add_dynamic_host(host, {'refresh': True})
-        for host, result in self._cached_dynamic_grouping:
-            result['refresh'] = True
-            self.add_dynamic_group(host, result)
+
+        if purge:
+            self._cached_dynamic_hosts.clear()
+            self._cached_dynamic_grouping.clear()
+        else:
+            for host in self._cached_dynamic_hosts:
+                self.add_dynamic_host(host, {'refresh': True})
+            for host, result in self._cached_dynamic_grouping:
+                result['refresh'] = True
+                self.add_dynamic_group(host, result)
 
     def _match_list(self, items, pattern_str):
         # compile patterns

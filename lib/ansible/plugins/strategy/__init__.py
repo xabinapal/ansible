@@ -951,7 +951,7 @@ class StrategyBase:
             self._tqm.send_callback('v2_playbook_on_task_start', task, is_conditional=False)
 
         # These don't support "when" conditionals
-        if meta_action in ('noop', 'refresh_inventory', 'reset_connection') and task.when:
+        if meta_action in ('noop', 'purge_inventory', 'refresh_inventory', 'reset_connection') and task.when:
             self._cond_not_supported_warn(meta_action)
 
         if meta_action == 'noop':
@@ -977,6 +977,10 @@ class StrategyBase:
             else:
                 skipped = True
                 skip_reason += ', not running handlers for %s' % target_host.name
+        elif meta_action == 'purge_inventory':
+            self._inventory.refresh_inventory(purge=True)
+            self._set_hosts_cache(iterator._play)
+            msg = "inventory successfully purged"
         elif meta_action == 'refresh_inventory':
             self._inventory.refresh_inventory()
             self._set_hosts_cache(iterator._play)
